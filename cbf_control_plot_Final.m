@@ -6,7 +6,6 @@ Coeffx = [1;0.125;0.5;-0.5;0.15625;-0.0139];
 Coeffy = [1;1;-1;0.5;-0.0625;0.00097];
 a1 = 0.5;
 a2 = 0.25;
-% t = linspace(0,6);
 
 % State Space 
 sx = linspace(-1,7);
@@ -15,10 +14,9 @@ sy = linspace(-1,7);
 
 % Task
 dt = 1e-2;
-tf = 6;
+tf = 5.92;
 tim=0:dt:tf;
 tplot = [0; 2; 4; 5.91];
-% tplot = [0; 3; 5.92];
 iplot = 2;
 
 % System
@@ -72,14 +70,12 @@ for i=1:length(tim)
     xCBF(:,i+1) = xCBF(:,i) + dt*uCBF;
 
     if any(t == tplot)
-        t
+        figure(1)
         subplot(1,length(tplot)+1,iplot)
         contourf(sX, sY, Hplot, 100, 'LineStyle','none');
         hold on;
         rectangle("Position",[2.25,2.25,1.5,1.5],"FaceColor",'r',"FaceAlpha",0.8);
-        % rectangle("Position",[-0.5,-0.5,1,1],"FaceColor",'g',"FaceAlpha",0.8);
         rectangle("Position",[5,4.5,1,1],"FaceColor",'g',"FaceAlpha",0.8);
-        contour(sX, sY, Hplot, [0 0], 'b-', 'LineWidth', 2);  % zero level set
         % colorbar
         clim([-250 0]);
 
@@ -103,13 +99,13 @@ for i=1:length(tim)
     
     %% 3D plot
     if mod(i,5) == 0
+        figure(1)
         subplot(1,length(tplot)+1,1)
         % Generate circle points
         thetaSTT = linspace(0, 2*pi, 200);
         xSTT = cenx + 0.4*cos(thetaSTT);
         ySTT = ceny + 0.4*sin(thetaSTT);
         tSTT = t*ones(size(thetaSTT));
-        % plot3(xSTT, ySTT, tSTT, 'b-', 'LineWidth', 2);
         fill3(xSTT, ySTT, tSTT, 'b', 'FaceAlpha', 0.2, 'EdgeColor', 'none', 'LineWidth', 1.5);
         hold on;
         grid on;
@@ -119,6 +115,8 @@ for i=1:length(tim)
         set(gca,'FontSize',16)
         view([65,15]);
     end
+    
+    % --- End of new animation block ---
 
     % frame2D = getframe(1);
     % writeVideo(video2D, frame2D);
