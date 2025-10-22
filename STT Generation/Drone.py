@@ -176,19 +176,7 @@ class STT_Solver():
             0 < a_i <= a0  (for all i > 0)
             and ordered ratios: (a_i / a0) is non-decreasing
         """
-        # a_lengths = [self.An_dict[f'a{i}'][0] for i in range(1, self.dimension)]
-        # print("CHECK: ", a_lengths)
-        # a0 = a_lengths[0]  # largest axis (major axis)
 
-        # # Ensure all other axes are positive and <= a0
-        # for ai in a_lengths[1:]:
-        #     self.solver.add(z3.And(ai > 0, ai <= a0))
-
-        # # Ensure (ai / a0) are in non-decreasing order
-        # for i in range(2, len(a_lengths)):
-        #     num1 = a_lengths[i-1]
-        #     num2 = a_lengths[i]
-        #     self.solver.add((num1 / a0) <= (num2 / a0))
 
     def plot_for_nD(self, C_fin):
         n = self.dimension
@@ -208,12 +196,6 @@ class STT_Solver():
                 coords[j][i] = gamma[j]
                 coord_dots[j][i] = gamma_dot[j]
 
-        # Print debug information
-        # for j in range(n):
-        #     print(f"gamma_dim{j}: ", coords[j])
-        #     print(f"gamma_dot_dim{j}: ", coord_dots[j])
-
-        # Create subplots
         fig, axs = plt.subplots(n, 1, figsize=(8, 2 * n), constrained_layout=True)
 
         # Ensure axs is always iterable
@@ -370,10 +352,10 @@ class STT_Solver():
         print(tabulate(rows, headers=header, tablefmt='grid'))
 
         # Write to CSV
-        with open(filename, mode='a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerows(rows)
+        # with open(filename, mode='a', newline='') as f:
+        #     writer = csv.writer(f)
+        #     writer.writerow(header)
+        #     writer.writerows(rows)
 
     def print_equation(self, C):
         for i in range(self.dimension):
@@ -670,76 +652,6 @@ def avoid(solver, *args):
     solver.displayTime(start, end)
     return all_constraints
 
-def real_gammas(t, C_fin):
-        '''method to calculate tube equations'''
-        real_tubes = np.zeros(3)
-        degree = int((len(C_fin) / (3)) - 1)
-
-        for i in range(3):
-            power = 0
-            for j in range(degree + 1): #each tube eq has {degree+1} terms
-                real_tubes[i] += ((C_fin[j + i * (degree + 1)]) * (t ** power))
-                power += 1
-        return real_tubes
-
-def real_gamma_dot(t, C_fin):
-    '''method to calculate tube equations'''
-    real_tubes = np.zeros(3)
-    degree = int((len(C_fin) / (3)) - 1)
-
-    for i in range(3):
-        power = 0
-        for j in range(degree + 1):
-            if power < 1:
-                real_tubes[i] += 0
-                power += 1
-            else:
-                real_tubes[i] += power * ((C_fin[j + i * (degree + 1)]) * (t ** (power - 1)))
-                power += 1
-    return real_tubes
-
-def tube_plotter(C_array):
-    any_empty = any(t[0] is None or (hasattr(t[0], '__len__') and len(t[0]) == 0) for t in C_array)
-
-    if not any_empty:
-        fig, axs = plt.subplots(3, 1, figsize=(8, 8), constrained_layout=True)
-        ax, bx, cx= axs
-
-        for tube in C_array:
-            step = 0.1
-            start = tube[1]
-            end = tube[2]
-            time_range = int((end - start + step)/step)
-
-            x = np.zeros(time_range)
-            y = np.zeros(time_range)
-            z = np.zeros(time_range)
-
-            gd_x = np.zeros(time_range)
-            gd_y = np.zeros(time_range)
-            gd_z = np.zeros(time_range)
-
-            for i in range(time_range):
-                tube_gamma = real_gammas(start + i * step, tube[0])
-                x[i] = tube_gamma[0]
-                y[i] = tube_gamma[1]
-                z[i] = tube_gamma[2]
-
-                tube_gamma_dot = real_gamma_dot(start + i * step, tube[0])
-                gd_x[i] = tube_gamma_dot[0]
-                gd_y[i] = tube_gamma_dot[1]
-                gd_z[i] = tube_gamma_dot[2]
-
-            t = np.linspace(start, end, time_range)
-            print("range: ", time_range, "\nstart: ", start, "\nfinish: ", end, "\nstep: ", step)
-
-            ax.plot(t, x)
-            bx.plot(t, y)
-            cx.plot(t, z)
-
-        plt.show()
-
-
 start = time.time()
 
 #----------------------------------------------------------------------------#
@@ -839,11 +751,3 @@ tube4 = solver4.find_solution()
 #----------------------------------------------------------------------------#
 
 print(time.time() - start, "seconds")
-
-tubes = [[tube1, 0, 12],
-         [tube2, 12, 24],
-         [tube3, 24, 36],
-         [tube4, 36, 49]
-        ]
-
-tube_plotter(tubes)
