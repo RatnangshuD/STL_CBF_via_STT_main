@@ -15,6 +15,7 @@ It includes two case studies:
 - `Drone.py`: Generates STTs for the drone example.
 
 ### Control and Visualization (MATLAB)
+- `OmnidirectionalRobot.m`: MATLAB file for visualizing omnidirectinal robot control using Spatiotemporal Tubes.
 - `DifferentialDriveRobot_control.m`: Synthesizes the closed-form controller and simulates the differential drive robot trajectory using the generated tube.
 - `Drone_control.m`: Synthesizes the closed-form controller and simulates the drone trajectory using the generated tube.
 
@@ -38,7 +39,7 @@ It includes two case studies:
    - Run `DifferentialDriveRobot_control.m` for the differential drive robot example or `Drone_control.m` for the drone.
    - This will simulate the system within the tube and visualize the results.
 
-## Citation
+<!-- ## Citation
 
 If you use this code in your research, please cite the following paper:
 
@@ -48,4 +49,4 @@ If you use this code in your research, please cite the following paper:
   author={Das, Ratnangshu and Choudhury, Subhodeep and Jagtap, Pushpak},
   journal={arXiv preprint arXiv:2505.05323},
   year={2025}
-}
+} -->
