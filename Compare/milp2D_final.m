@@ -130,24 +130,6 @@ ylim([-1.2,1.2])
 % ax.FontSize = 16;
 axis square
 
-%% Path length
-% x = x_opt(1,:);
-% y = x_opt(2,:);
-% 
-% % Smooth the data using Savitzky-Golay filter
-% window_size = 5; %round(t_len/200)*2+1; % Choose an appropriate window size
-% order = 3;        % Polynomial order
-% x_smooth = sgolayfilt(x, order, window_size);
-% y_smooth = sgolayfilt(y, order, window_size);
-% 
-% % Compute path length
-% dx = diff(x_smooth);
-% dy = diff(y_smooth);
-% segment_lengths = sqrt(dx.^2 + dy.^2);
-% path_length = sum(segment_lengths);
-% 
-% % Display results
-% fprintf('Smoothed Path Length: %.4f\n', path_length);
 
 toc
 end

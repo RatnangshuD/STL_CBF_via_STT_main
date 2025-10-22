@@ -176,12 +176,9 @@ for k = 1:length(tplot)
     
     hold off;
 end
-sgtitle('Drone Trajectory at Different Time Instances', 'FontSize', 18, 'FontWeight', 'bold', 'Interpreter', 'none');
-fprintf('Plotting complete.\n');
 
 %% Local Function (Unchanged)
 function plot_cuboid(origin, dims, color, alphaVal)
-    % Plots a translucent cuboid in 3D space.
     x = origin(1); y = origin(2); z = origin(3);
     dx = dims(1); dy = dims(2); dz = dims(3);
     
