@@ -370,7 +370,7 @@ class STT_Solver():
         print(tabulate(rows, headers=header, tablefmt='grid'))
 
         # Write to CSV
-        with open(filename, mode='a', newline='') as f:
+        with open(filename, mode='w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(header)
             writer.writerows(rows)
