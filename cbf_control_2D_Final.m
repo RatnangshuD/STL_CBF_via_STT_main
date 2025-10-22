@@ -1,6 +1,5 @@
 % CBF via STT on a Differential Drive Mobile Robot
 
-
 clc;
 clear;
 clf;
@@ -68,7 +67,6 @@ for i = 1:length(tim)
     A = [0.5 0; 0 0.5];
     Qinv = inv(A * A');
 
-    % --- Nominal Controller ---
     dist_error = norm([x_pos; y_pos] - cen);
     angle_to_cen = atan2(cen(2) - y_pos, cen(1) - x_pos);
     angle_error = wrapToPi(angle_to_cen - theta);
