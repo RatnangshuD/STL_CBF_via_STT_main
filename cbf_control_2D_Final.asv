@@ -106,11 +106,10 @@ for i = 1:length(tim)
     qCBF(:, i+1) = q + dt * q_dot;
     qCBF(3, i+1) = wrapToPi(qCBF(3, i+1)); % Keep theta in [-pi, pi]
     
-    % Plotting
-    if mod(i, 5) == 0 
-        figure(1)
-        sh = subplot(1, 4, 2*cas);
-        cla(sh)
+    % --- Plotting ---
+    if any(abs(t - tplot) < dt/2)
+        subplot(1, 4, iplot + (cas-1)*2);
+        
         dx = sX - cen(1);
         dy = sY - cen(2);
         H_grid = 1 - (Qinv(1,1)*dx.^2 + 2*Qinv(1,2).*dx.*dy + Qinv(2,2)*dy.^2);
@@ -126,7 +125,7 @@ for i = 1:length(tim)
         
         plot(qCBF(1,i0:i), qCBF(2,i0:i), 'k-', 'LineWidth', 2); 
         
-        robot_size = 0.5; 
+        robot_size = 1.5; 
         tip_x = x_pos + robot_size * cos(theta);
         tip_y = y_pos + robot_size * sin(theta);
         
@@ -149,9 +148,11 @@ for i = 1:length(tim)
         axis square;
         title(['$t = $', num2str(t, '%.1f'), ' s'], 'Interpreter', 'latex', 'FontSize', 16);
         iplot = iplot + 1;
-        hold off;
+    end
     
-        % 3D plot
+    % 3D plot update
+    if mod(i, 5) == 0 
+        figurw
         subplot(1, 4, 1 + (cas-1)*2);
         
         hold on;

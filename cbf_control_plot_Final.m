@@ -1,3 +1,5 @@
+% CBF via STT on a Omnidirectional Mobile Robot
+
 clc;
 clear;
 clf;
@@ -64,7 +66,8 @@ for i=1:length(tim)
     b_qp = gamma * h / dt;
     
     % Solve QP
-    uCBF = quadprog(H, f, A_qp, b_qp);  % Requires Optimization Toolbox
+    options = optimoptions('quadprog', 'Display', 'off');
+    uCBF = quadprog(H, f, A_qp, b_qp, [], [], [], [], [], options);
 
     % Plotting
     xCBF(:,i+1) = xCBF(:,i) + dt*uCBF;
