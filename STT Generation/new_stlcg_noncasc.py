@@ -176,19 +176,6 @@ class STT_Solver():
             0 < a_i <= a0  (for all i > 0)
             and ordered ratios: (a_i / a0) is non-decreasing
         """
-        # a_lengths = [self.An_dict[f'a{i}'][0] for i in range(1, self.dimension)]
-        # print("CHECK: ", a_lengths)
-        # a0 = a_lengths[0]  # largest axis (major axis)
-
-        # # Ensure all other axes are positive and <= a0
-        # for ai in a_lengths[1:]:
-        #     self.solver.add(z3.And(ai > 0, ai <= a0))
-
-        # # Ensure (ai / a0) are in non-decreasing order
-        # for i in range(2, len(a_lengths)):
-        #     num1 = a_lengths[i-1]
-        #     num2 = a_lengths[i]
-        #     self.solver.add((num1 / a0) <= (num2 / a0))
 
     def plot_for_nD(self, C_fin):
         n = self.dimension
@@ -309,11 +296,11 @@ class STT_Solver():
                     self.an_solved[key] = solved_coeffs
 
                 self.store_csv(self.C_solved, self.an_solved)
-                self.plot_for_nD(self.C_solved)
+                # self.plot_for_nD(self.C_solved)
                 # self.print_equation(self.C_solved)
                 print(f"Solver time: {end - start} seconds")
                 self.displayTime(start, end)
-                plt.show()
+                # plt.show()
 
             else:
                 print("No solution found.")
@@ -371,10 +358,10 @@ class STT_Solver():
         print(tabulate(rows, headers=header, tablefmt='grid'))
 
         # Write to CSV
-        with open(filename, mode='a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerows(rows)
+        # with open(filename, mode='a', newline='') as f:
+        #     writer = csv.writer(f)
+        #     writer.writerow(header)
+        #     writer.writerows(rows)
 
     def print_equation(self, C):
         for i in range(self.dimension):
@@ -426,15 +413,6 @@ class STT_Solver():
         self.setRange(int((self.getFinish() - self.getStart() + self._step) / self._step))
 
     def displayTime(self, start, end):
-        # k = int(end - start)
-        # days = k // (3600 * 24)
-        # hrs = (k // 3600) - (days * 24)
-        # mins = (k // 60) - (hrs * 60)
-        # if end - start < 1:
-        #     secs = (((end - start) * 10000) // 100) / 100
-        # else:
-        #     secs = k - (mins * 60) - (hrs * 3600) - (days * 24 * 3600)
-        # print("Time taken: ", days, "days, ", hrs , "hours, ", mins, "minutes, ", secs, "seconds")
         print(f"Time taken: {end - start} seconds")
 
     def getStart(self):
@@ -788,73 +766,3 @@ for Goal in Goal_constraints_list:
 solver2.join_constraint(tube1, solver1, 5)
 tube2 = solver2.find_solution()
 #----------------------------------------------------------------------------#
-
-tubes = [[tube1, 0, 5],
-         [tube2, 5, 10]
-        ]
-
-def real_gammas(t, C_fin):
-        '''method to calculate tube equations'''
-        real_tubes = np.zeros(2)
-        degree = int((len(C_fin) / (2)) - 1)
-
-        for i in range(2):
-            power = 0
-            for j in range(degree + 1): #each tube eq has {degree+1} terms
-                real_tubes[i] += ((C_fin[j + i * (degree + 1)]) * (t ** power))
-                power += 1
-        return real_tubes
-
-def real_gamma_dot(t, C_fin):
-    '''method to calculate tube equations'''
-    real_tubes = np.zeros(2)
-    degree = int((len(C_fin) / (2)) - 1)
-
-    for i in range(2):
-        power = 0
-        for j in range(degree + 1):
-            if power < 1:
-                real_tubes[i] += 0
-                power += 1
-            else:
-                real_tubes[i] += power * ((C_fin[j + i * (degree + 1)]) * (t ** (power - 1)))
-                power += 1
-    return real_tubes
-
-def tube_plotter(C_array):
-    any_empty = any(t[0] is None or (hasattr(t[0], '__len__') and len(t[0]) == 0) for t in C_array)
-
-    if not any_empty:
-        fig, axs = plt.subplots(2, 1, figsize=(8, 8), constrained_layout=True)
-        ax, bx = axs
-
-        for tube in C_array:
-            step = 0.1
-            start = tube[1]
-            end = tube[2]
-            time_range = int((end - start + step)/step)
-
-            x = np.zeros(time_range)
-            y = np.zeros(time_range)
-
-            gd_x = np.zeros(time_range)
-            gd_y = np.zeros(time_range)
-
-            for i in range(time_range):
-                tube_gamma = real_gammas(start + i * step, tube[0])
-                x[i] = tube_gamma[0]
-                y[i] = tube_gamma[1]
-
-                tube_gamma_dot = real_gamma_dot(start + i * step, tube[0])
-                gd_x[i] = tube_gamma_dot[0]
-                gd_y[i] = tube_gamma_dot[1]
-
-            t = np.linspace(start, end, time_range)
-            print("range: ", time_range, "\nstart: ", start, "\nfinish: ", end, "\nstep: ", step)
-
-            ax.plot(t, x)
-            bx.plot(t, y)
-
-        plt.show()
-
-tube_plotter(tubes)

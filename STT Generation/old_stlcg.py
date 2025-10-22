@@ -203,17 +203,17 @@ class STT_Solver():
             for i in range(len(Coeffs)):
                 data_dicts.append({'Coefficient': self.C[i], 'Value': Coeffs[i]})
 
-            with open('OmnidirectionalRobot1.csv', 'a', newline='') as file:
-                writer = csv.DictWriter(file, fieldnames=fieldnames)
-                if file.tell() == 0:
-                    writer.writeheader()
-                writer.writerows(data_dicts)
+            # with open('OmnidirectionalRobot1.csv', 'a', newline='') as file:
+            #     writer = csv.DictWriter(file, fieldnames=fieldnames)
+            #     if file.tell() == 0:
+            #         writer.writeheader()
+            #     writer.writerows(data_dicts)
 
-            self.plot_for_2D(Coeffs)
-            self.print_equation(Coeffs)
+            # self.plot_for_2D(Coeffs)
+            # self.print_equation(Coeffs)
             print(f"Solver time: {end - start} seconds")
             self.displayTime(start, end)
-            plt.show()
+            # plt.show()
 
         else:
             Coeffs = []
@@ -266,15 +266,6 @@ class STT_Solver():
         self.setRange(int((self.getFinish() - self.getStart() + self._step) / self._step))
 
     def displayTime(self, start, end):
-        # k = int(end - start)
-        # days = k // (3600 * 24)
-        # hrs = (k // 3600) - (days * 24)
-        # mins = (k // 60) - (hrs * 60)
-        # if end - start < 1:
-        #     secs = (((end - start) * 10000) // 100) / 100
-        # else:
-        #     secs = k - (mins * 60) - (hrs * 3600) - (days * 24 * 3600)
-        # print("Time taken: ", days, "days, ", hrs , "hours, ", mins, "minutes, ", secs, "seconds")
         print(f"Time taken: {end - start} seconds")
 
     def join_constraint(self, prev_tube, prev_solver, prev_t_end):
@@ -446,92 +437,3 @@ for Goal in Goal_constraints_list:
 solver2.join_constraint(tube1, solver1, 5)
 tube2 = solver2.find_solution()
 #----------------------------------------------------------------------------#
-
-tubes = [[tube1, 0, 5],
-         [tube2, 5, 10]
-        ]
-
-def real_gammas(t, C_fin):
-        '''method to calculate tube equations'''
-        real_tubes = np.zeros(2 * 2)
-        degree = int((len(C_fin) / (2 * 2)) - 1)
-
-        for i in range(2 * 2):
-            power = 0
-            for j in range(degree + 1): #each tube eq has {degree+1} terms
-                real_tubes[i] += ((C_fin[j + i * (degree + 1)]) * (t ** power))
-                power += 1
-        return real_tubes
-
-def real_gamma_dot(t, C_fin):
-    '''method to calculate tube equations'''
-    real_tubes = np.zeros(2 * 2)
-    degree = int((len(C_fin) / (2 * 2)) - 1)
-
-    for i in range(2 * 2):
-        power = 0
-        for j in range(degree + 1):
-            if power < 1:
-                real_tubes[i] += 0
-                power += 1
-            else:
-                real_tubes[i] += power * ((C_fin[j + i * (degree + 1)]) * (t ** (power - 1)))
-                power += 1
-    return real_tubes
-
-def tube_plotter(C_array):
-    fig, axs = plt.subplots(2, 1, figsize=(8, 8), constrained_layout=True)
-    ax, bx = axs
-
-    for tube in C_array:
-        step = 0.1
-        start = tube[1]
-        end = tube[2]
-        time_range = int((end - start + step)/step)
-
-        x_l = np.zeros(time_range)
-        y_l = np.zeros(time_range)
-        x_u = np.zeros(time_range)
-        y_u = np.zeros(time_range)
-
-        gd_xl = np.zeros(time_range)
-        gd_yl = np.zeros(time_range)
-        gd_xu = np.zeros(time_range)
-        gd_yu = np.zeros(time_range)
-
-        for i in range(time_range):
-            tube_gamma = real_gammas(start + i * step, tube[0])
-            x_l[i] = tube_gamma[0]
-            y_l[i] = tube_gamma[1]
-            x_u[i] = tube_gamma[2]
-            y_u[i] = tube_gamma[3]
-
-            tube_gamma_dot = real_gamma_dot(start + i * step, tube[0])
-            gd_xl[i] = tube_gamma_dot[0]
-            gd_yl[i] = tube_gamma_dot[1]
-            gd_xu[i] = tube_gamma_dot[2]
-            gd_yu[i] = tube_gamma_dot[3]
-
-        # for i in setpoints:        # t1    x1/y1   t2     t1   x2/y2  x1/y1
-        #     square_x = patches.Rectangle((i[4], i[0]), i[5] - i[4], i[1] - i[0], edgecolor='green', facecolor='none')
-        #     square_y = patches.Rectangle((i[4], i[2]), i[5] - i[4], i[3] - i[2], edgecolor='green', facecolor='none')
-        #     ax.add_patch(square_x)
-        #     bx.add_patch(square_y)
-
-        # for i in obstacles:        # t1    x1/y1   t2     t1   x2/y2  x1/y1
-        #     square_x = patches.Rectangle((i[4], i[0]), i[5] - i[4], i[1] - i[0], edgecolor='red', facecolor='none')
-        #     square_y = patches.Rectangle((i[4], i[2]), i[5] - i[4], i[3] - i[2], edgecolor='red', facecolor='none')
-        #     ax.add_patch(square_x)
-        #     bx.add_patch(square_y)
-
-        t = np.linspace(start, end, time_range)
-        print("range: ", time_range, "\nstart: ", start, "\nfinish: ", end, "\nstep: ", step)
-
-        ax.plot(t, x_u)
-        ax.plot(t, x_l)
-        bx.plot(t, y_u)
-        bx.plot(t, y_l)
-
-    plt.show()
-
-tube_plotter(tubes)
