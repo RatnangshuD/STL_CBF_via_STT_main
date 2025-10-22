@@ -811,8 +811,8 @@ tube3 = solver3.find_solution()
 
 print(time.time() - start, "seconds")
 
-tubes = [[tube1, 0, 7],
-         [tube2, 6, 15],
+tubes = [[tube1, 0, 6],
+         [tube2, 6, 14],
          [tube3, 14, 18]
         ]
 
